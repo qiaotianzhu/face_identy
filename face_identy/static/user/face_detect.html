@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人脸识别检测</title>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/faceUtil.js"></script>
+    <script src="../js/vue.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #myApp {
+            max-width: 500px;
+            width: 100%;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(120deg, #007bff, #00bcd4);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .header h2 {
+            margin: 0 0 10px 0;
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .video-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        #video {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(120deg, #007bff, #00bcd4);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(120deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(120deg, #6c757d, #adb5bd);
+            color: white;
+        }
+
+        .btn-login {
+            background: linear-gradient(120deg, #17a2b8, #6f42c1);
+            color: white;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #6c757d;
+            margin: 15px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .divider::before {
+            margin-right: 15px;
+        }
+
+        .divider::after {
+            margin-left: 15px;
+        }
+
+        .instructions {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #007bff;
+        }
+
+        .instructions h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+            text-align: left;
+            margin-bottom: 0;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .instructions li:last-child {
+            margin-bottom: 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: #6c757d;
+            font-size: 14px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div id="myApp">
+        <div class="header">
+            <h2>人脸识别检测</h2>
+            <p>请将面部对准摄像头进行识别</p>
+        </div>
+
+        <div class="content">
+            <div class="video-container">
+                <div id="video">摄像头预览区域</div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" @click="facedetect()" class="btn btn-primary">
+                    人脸识别检测
+                </button>
+                <button type="button" @click="facecollect()" class="btn btn-success">
+                    人脸信息录入
+                </button>
+                <button type="button" @click="refreshVideo" class="btn btn-secondary">
+                    重新连接摄像头
+                </button>
+            </div>
+
+            <div class="divider">其他方式登录</div>
+
+            <button type="button" @click="goToLogin" class="btn btn-login">
+                账号密码登录
+            </button>
+
+            <div class="instructions">
+                <h3>使用说明</h3>
+                <ul>
+                    <li>确保摄像头已正确连接并授予权限</li>
+                    <li>将面部正对摄像头，保持适当距离</li>
+                    <li>点击"人脸识别检测"进行身份验证</li>
+                    <li>首次使用请先点击"人脸信息录入"注册人脸信息</li>
+                    <li>如遇到摄像头问题，请点击"重新连接摄像头"</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>人脸识别系统 © 2023</p>
+        </div>
+    </div>
+</body>
+<script>
+    new Vue({
+        el:"#myApp",
+        methods:{
+           facedetect(){
+    const code = faceUtile.getDecode();//获取人脸信息
+    console.log(code);//控制台打印人脸信息码
+    const param={
+        image:code,
+    }
+    //发送ajax请求，把前端的数据发送给后端
+    $.ajax({
+        url:"/user/face_detect/",
+        type:"post",
+        data:JSON.stringify(param),
+        contentType: "application/json",
+        success:function(res){
+            if(res.code==200){
+                alert("识别成功: " + res.msg)
+                // 将后端返回的数据存储到localStorage，使用正确的数据结构
+                localStorage.setItem('user_info', JSON.stringify(res.data));
+                window.location.href = res.redirect_url;
+            }else{
+                alert("识别失败: " + res.msg)
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("请求失败: " + error);
+        }
+    })
+},
+
+
+            facecollect() {
+                // 跳转到人脸信息采集页面
+                window.location.href = "face_collect.html";
+            },
+            refreshVideo() {
+                // 重新初始化摄像头
+                faceUtile.openVideo("video");
+                faceUtile.width=400;
+                faceUtile.height=300;
+            },
+            goToLogin() {
+                // 跳转到登录页面
+                window.location.href = "../login.html";
+            }
+        }
+    })
+
+    $(function(){
+        //指定摄像头的位置
+        faceUtile.openVideo("video");
+        faceUtile.width=400;
+        faceUtile.height=300;
+    })
+</script>
+</html>

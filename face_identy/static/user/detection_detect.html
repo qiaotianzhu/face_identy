@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>目标检测系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .model-selection {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .model-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .model-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .model-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .model-btn.active {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .model-btn.active::after {
+            content: '✓';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #4CAF50;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .model-btn.model1 {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+        }
+
+        .model-btn.model2 {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .model-btn.model3 {
+            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+            color: white;
+        }
+
+        .image-section {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .image-section {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        .image-box-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        .image-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-box-title {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .image-display {
+            flex: 1;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            background-color: #f9f9f9;
+            overflow: hidden;
+        }
+
+        .image-display:hover {
+            border-color: #2196F3;
+        }
+
+        .image-display img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 180px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .predict-btn {
+            background: linear-gradient(135deg, #FF5722, #E64A19);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2196F3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .status-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .selected-model-info {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .model-description {
+            text-align: center;
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* 模态框内表单组样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        /* 添加检测信息面板的样式 */
+        .detection-info-panel {
+            font-size: 0.9rem;
+        }
+
+        .detection-info-panel h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+
+        /* 响应式检测信息面板 */
+.detection-info-panel {
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.detection-info-panel h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 10px;
+}
+.predict-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+.predict-btn:disabled:hover::after {
+    content: "请先选择识别模型";
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+.predict-btn:disabled:hover {
+    position: relative;
+}
+
+/* 使用记录模态框样式 */
+#recordListModal table th,
+#recordListModal table td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#recordListModal table tr:hover {
+    background-color: #f8f9fa;
+}
+
+#recordListModal .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #2196F3;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+
+/* 大屏幕设备上的并排布局 */
+@media (min-width: 992px) {
+    .result-container {
+        flex-direction: row !important;
+    }
+
+    .result-container .image-display {
+        flex: 3 !important;
+        margin-bottom: 0 !important;
+        margin-right: 15px;
+    }
+
+    .detection-info-panel {
+        flex: 2 !important;
+        max-height: none !important;
+    }
+}
+
+/* 中等屏幕设备优化 */
+@media (min-width: 768px) and (max-width: 991px) {
+    .image-box {
+        height: 600px;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <!-- 在 header 部分下方添加个人信息区域 -->
+    <!-- 修改用户信息区域，添加退出登录按钮 -->
+    <!-- 修改用户信息区域，添加查看记录按钮 -->
+    <div class="user-info-section" style="background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h3 style="color: #333; margin-bottom: 10px;">用户信息</h3>
+                <p id="userInfo" style="color: #666;">请登录查看个人信息</p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="action-btn" onclick="showRecordList()" style="background: linear-gradient(135deg, #6f42c1, #5a32a3);">查看记录</button>
+                <button class="action-btn" onclick="showUserInfo()" style="background: linear-gradient(135deg, #2196F3, #1976D2);">修改信息</button>
+                <button class="action-btn" onclick="showChangePassword()" style="background: linear-gradient(135deg, #FF9800, #F57C00);">设置密码</button>
+                <button class="action-btn" onclick="logout()" style="background: linear-gradient(135deg, #f44336, #d32f2f);">退出登录</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="container">
+        <div class="header">
+            <h1>目标检测系统</h1>
+            <p>基于深度学习的多个目标识别解决方案</p>
+        </div>
+
+        <div class="main-content">
+            <!-- 模型选择区域 -->
+            <div class="model-selection">
+                <h2 class="section-title">选择识别模型</h2>
+                <div class="model-buttons">
+                    <button class="model-btn model1" data-model="model1">车辆检测模型</button>
+                    <button class="model-btn model2" data-model="model2">模型2</button>
+                    <button class="model-btn model3" data-model="model3">模型3</button>
+                </div>
+                <div class="selected-model-info" id="selectedModelInfo">
+                    当前未选择模型
+                </div>
+                <div class="model-description" id="modelDescription">
+                    请选择一个模型开始识别
+                </div>
+            </div>
+
+            <!-- 图像处理区域 -->
+            <div class="image-section">
+                <div class="image-box-container">
+                    <div class="image-box">
+                        <div class="image-box-title">原始图像</div>
+                        <div class="image-display" id="originalImageBox" onclick="getImg()">
+                            <div class="upload-text">点击上传图片或拖拽图片到此处</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="image-box-container">
+                    <div class="image-box">
+                        <div class="image-box-title">识别结果</div>
+                        <div class="result-container" style="display: flex; flex-direction: column; height: 100%;">
+                            <div class="image-display" id="processedImageBox" style="flex: 1; margin-bottom: 15px;">
+                                <div class="upload-text">预测结果将显示在这里</div>
+                            </div>
+                            <!-- 检测信息面板 -->
+                            <div class="detection-info-panel" id="detectionInfoPanel" style="background-color: #f8f9fa; border-radius: 8px; padding: 15px; display: none; max-height: 200px; overflow-y: auto;">
+                                <h3 style="margin-top: 0; color: #333; border-bottom: 1px solid #dee2e6; padding-bottom: 10px; font-size: 1.1rem;">检测信息</h3>
+                                <div id="detectionInfoContent"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- 操作按钮 -->
+            <div class="action-buttons">
+                <button class="action-btn upload-btn" onclick="getImg()">上传图片</button>
+                <button class="action-btn predict-btn" onclick="sendImg()" id="predictBtn" disabled>开始识别</button>
+            </div>
+
+            <!-- 状态消息 -->
+            <div class="status-message" id="statusMessage"></div>
+
+            <!-- 加载动画 -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>正在处理中，请稍候...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 在页面底部添加模态框 -->
+    <!-- 用户信息模态框 -->
+    <div class="modal" id="userInfoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="modal-content" style="background-color: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>个人信息</h2>
+                <span class="close" onclick="closeUserInfoModal()" style="font-size: 28px; cursor: pointer; color: #aaa;">&times;</span>
+            </div>
+            <form id="userInfoForm">
+                <div class="form-group">
+                    <label for="userName">用户名:</label>
+                    <input type="text" id="userName" name="username" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                </div>
+                <div class="form-group">
+                    <label for="userAge">年龄:</label>
+                    <input type="number" id="userAge" name="age" required min="1" max="150" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                </div>
+                <div class="form-group">
+                    <label for="userPhone">电话:</label>
+                    <input type="tel" id="userPhone" name="phone" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                </div>
+                <!-- 在表单底部添加人脸识别提示区域 -->
+                <div id="faceRecognitionPrompt" style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; display: none;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <strong>未进行人脸识别认证</strong>
+                            <p style="margin: 5px 0 0 0; font-size: 14px; color: #856404;">为了账户安全，请完成人脸识别认证</p>
+                        </div>
+                        <button type="button" onclick="goToFaceCollection()" style="padding: 8px 15px; background: #ffc107; color: #212529; border: none; border-radius: 5px; cursor: pointer; font-weight: 500;">前往认证</button>
+                    </div>
+                </div>
+
+                <!-- 模态框内消息显示区域 -->
+                <div class="message error-message" id="userInfoModalErrorMessage" style="display: none; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2;"></div>
+                <div class="message success-message" id="userInfoModalSuccessMessage" style="display: none; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9;"></div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" onclick="closeUserInfoModal()" style="padding: 10px 20px; background: #9E9E9E; color: white; border: none; border-radius: 5px; cursor: pointer;">取消</button>
+                    <button type="button" onclick="updateUserInfo()" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 修改密码模态框 -->
+    <!-- 修改密码模态框 -->
+    <div class="modal" id="changePasswordModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="modal-content" style="background-color: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>设置密码</h2>
+                <span class="close" onclick="closeChangePasswordModal()" style="font-size: 28px; cursor: pointer; color: #aaa;">&times;</span>
+            </div>
+            <form id="changePasswordForm">
+                <div id="noPasswordPrompt" style="display: none; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; margin-bottom: 20px; text-align: center; color: #856404;">
+                    <strong>提示：</strong>当前账户未设置密码，请设置新密码
+                </div>
+                <div class="form-group" id="oldPasswordGroup">
+                    <label for="oldPassword">原密码:</label>
+                    <input type="password" id="oldPassword" name="oldPassword" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">新密码:</label>
+                    <input type="password" id="newPassword" name="newPassword" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">确认新密码:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                </div>
+                <!-- 模态框内消息显示区域 -->
+                <div class="message error-message" id="changePasswordModalErrorMessage" style="display: none; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2;"></div>
+                <div class="message success-message" id="changePasswordModalSuccessMessage" style="display: none; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9;"></div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" onclick="closeChangePasswordModal()" style="padding: 10px 20px; background: #9E9E9E; color: white; border: none; border-radius: 5px; cursor: pointer;">取消</button>
+                    <button type="button" onclick="changePassword()" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">确定</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 使用记录模态框 -->
+    <div class="modal" id="recordListModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="modal-content" style="background-color: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 800px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+                <h2>使用记录</h2>
+                <span class="close" onclick="closeRecordListModal()" style="font-size: 28px; cursor: pointer; color: #aaa;">&times;</span>
+            </div>
+            <div id="recordListContent" style="min-height: 300px;">
+                <!-- 记录列表将在这里显示 -->
+                <div id="recordListLoading" style="text-align: center; padding: 20px; display: none;">
+                    <div class="spinner" style="margin: 0 auto;"></div>
+                    <p>正在加载记录...</p>
+                </div>
+                <div id="recordListTable" style="display: none;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background-color: #f8f9fa;">
+                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #dee2e6;">开始时间</th>
+                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #dee2e6;">模型</th>
+                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #dee2e6;">处理时间(秒)</th>
+                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #dee2e6;">保存路径</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordTableBody">
+                            <!-- 记录数据将在这里显示 -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="recordListError" style="display: none; text-align: center; padding: 20px; color: #dc3545;">
+                    <!-- 错误信息将在这里显示 -->
+                </div>
+            </div>
+            <!-- 修改使用记录模态框的按钮区域 -->
+            <div style="margin-top: 20px; text-align: center; display: flex; justify-content: center; gap: 10px;">
+                <button type="button" onclick="clearRecordList()" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">清空记录</button>
+                <button type="button" onclick="closeRecordListModal()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">关闭</button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        let img = null;
+        let selectedModel = null;
+        const modelDescriptions = {
+            'model1': '交通路况车辆检测',
+            'model2': '模型二',
+            'model3': '模型三'
+        };
+
+        // 修改模型选择功能
+        document.querySelectorAll('.model-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // 移除所有按钮的激活状态
+                document.querySelectorAll('.model-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // 激活当前按钮
+                this.classList.add('active');
+
+                // 设置选中的模型
+                selectedModel = this.getAttribute('data-model');
+
+                // 更新显示信息
+                document.getElementById('selectedModelInfo').textContent = `当前选择: ${this.textContent}`;
+                document.getElementById('modelDescription').textContent = modelDescriptions[selectedModel];
+
+                // 启用预测按钮（如果有图片）
+                if (img) {
+                    document.getElementById('predictBtn').disabled = false;
+                }
+            });
+        });
+
+
+        // 修改图片上传功能
+function getImg() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            document.getElementById('originalImageBox').innerHTML = `<img src="${event.target.result}" alt="原始图像"/>`;
+            img = event.target.result;
+
+            // 如果已选择模型，启用预测按钮
+            if (selectedModel) {
+                document.getElementById('predictBtn').disabled = false;
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+    input.click();
+}
+
+
+        // 修改拖拽上传功能
+const originalImageBox = document.getElementById('originalImageBox');
+originalImageBox.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.style.borderColor = '#2196F3';
+    this.style.backgroundColor = '#e3f2fd';
+});
+
+originalImageBox.addEventListener('dragleave', function() {
+    this.style.borderColor = '#ccc';
+    this.style.backgroundColor = '#f9f9f9';
+});
+
+originalImageBox.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.style.borderColor = '#ccc';
+    this.style.backgroundColor = '#f9f9f9';
+
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            document.getElementById('originalImageBox').innerHTML = `<img src="${event.target.result}" alt="原始图像"/>`;
+            img = event.target.result;
+
+            // 如果已选择模型，启用预测按钮
+            if (selectedModel) {
+                document.getElementById('predictBtn').disabled = false;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+
+        // 图片预测功能
+// 修改图片预测功能
+function sendImg() {
+    if (!img) {
+        showMessage('请先选择图片', 'error');
+        return;
+    }
+
+    if (!selectedModel) {
+        showMessage('请先选择识别模型', 'error');
+        return;
+    }
+
+    // 显示加载状态
+    showLoading(true);
+    showMessage('', ''); // 清除之前的消息
+
+    const formData = new FormData();
+    fetch(img).then(res => res.blob()).then(blob => {
+        const file = new File([blob], "image.jpg", { type: "image/jpeg" });
+        formData.append('img', file);
+        formData.append('model', selectedModel); // 添加模型参数
+
+        fetch('/user/detection_detect/', {
+            method: 'POST',
+            body: formData,
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('网络响应异常');
+            }
+            return response.json();
+        })
+        .then(data => {
+            showLoading(false);
+            if (data.processed_img_base64) {
+                // 显示处理后的图片
+                document.getElementById('processedImageBox').innerHTML = `<img src="${data.processed_img_base64}" alt="识别结果"/>`;
+
+                // 显示检测信息面板
+                const detectionInfoPanel = document.getElementById('detectionInfoPanel');
+                const detectionInfoContent = document.getElementById('detectionInfoContent');
+
+                // 显示详细检测信息
+                if (data.detection_info) {
+                    displayDetectionInfo(data.detection_info);
+                    detectionInfoPanel.style.display = 'block';
+                } else if (data.detection_summary) {
+                    // 显示摘要信息
+                    displayDetectionSummary(data.detection_summary);
+                    detectionInfoPanel.style.display = 'block';
+                }
+
+                // 保存检测数据到全局变量，供保存功能使用
+                window.detectionResult = data;
+
+                // 显示保存按钮
+                showSaveButton();
+
+                showMessage('识别完成', 'success');
+            } else {
+                showMessage('识别失败：' + (data.error || '未知错误'), 'error');
+            }
+        })
+        .catch(error => {
+            showLoading(false);
+            showMessage('请求失败：' + error.message, 'error');
+            console.error('Error:', error);
+        });
+    }).catch(error => {
+        showLoading(false);
+        showMessage('图片处理失败：' + error.message, 'error');
+        console.error('Error:', error);
+    });
+}
+        // 显示保存按钮
+        function showSaveButton() {
+            // 检查是否已经存在保存按钮
+            if (document.getElementById('saveResultBtn')) {
+                return;
+            }
+
+            // 创建保存按钮
+            const saveButton = document.createElement('button');
+            saveButton.id = 'saveResultBtn';
+            saveButton.className = 'action-btn';
+            saveButton.style.background = 'linear-gradient(135deg, #9C27B0, #7B1FA2)';
+            saveButton.textContent = '保存结果';
+            saveButton.onclick = saveDetectionResult;
+
+            // 将按钮添加到操作按钮区域
+            const actionButtons = document.querySelector('.action-buttons');
+            actionButtons.appendChild(saveButton);
+        }
+        // 保存检测结果
+        // 保存检测结果
+        function saveDetectionResult() {
+            if (!window.detectionResult) {
+                showMessage('没有检测结果可保存', 'error');
+                return;
+            }
+
+            // 显示加载状态
+            showLoading(true);
+            const userid = getUserId();
+
+            // 准备发送到后端的数据（不包含 save_path）
+            const requestData = {
+                detection_info: window.detectionResult.detection_info,
+                detection_summary: window.detectionResult.detection_summary,
+                image_data: window.detectionResult.processed_img_base64,
+                user_id: userid,
+            };
+
+            // 发送保存请求到后端
+            fetch('/user/save_detection_result/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.code === 200) {
+                    showMessage(`检测结果保存成功！保存路径：${data.data.save_path}`, 'success');
+                } else if (data.code === 400 && data.msg === "用户取消了保存操作") {
+                    showMessage("用户取消了保存操作", 'info');
+                } else {
+                    showMessage(`保存失败：${data.msg}`, 'error');
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                showMessage(`保存请求失败：${error.message}`, 'error');
+                console.error('Error:', error);
+            });
+        }
+
+        // 显示详细检测信息
+        function displayDetectionInfo(infoData) {
+            const detectionInfoContent = document.getElementById('detectionInfoContent');
+
+            let infoHTML = `
+                <div class="info-item">
+                    <div class="info-label">处理时间:</div>
+                    <div class="info-value">${infoData.processing_time.toFixed(2)}秒</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">开始时间:</div>
+                    <div class="info-value">${infoData.start_time}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">结束时间:</div>
+                    <div class="info-value">${infoData.end_time}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">使用模型:</div>
+                    <div class="info-value">${infoData.model_used}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">检测目标数:</div>
+                    <div class="info-value">${infoData.total_detections}</div>
+                </div>
+            `;
+
+            if (infoData.detections && infoData.detections.length > 0) {
+                infoHTML += `<h4 style="color: #333; margin: 15px 0 10px; font-size: 1rem;">检测详情:</h4>`;
+
+                infoData.detections.forEach(detection => {
+                    const confidencePercent = (detection.confidence * 100).toFixed(1);
+                    infoHTML += `
+                        <div class="detection-item">
+                            <div class="detection-item-header">${detection.class_name}</div>
+                            <div class="info-item">
+                                <div class="info-label">置信度:</div>
+                                <div class="info-value">${confidencePercent}%</div>
+                            </div>
+                            <div class="confidence-bar">
+                                <div class="confidence-level" style="width: ${confidencePercent}%"></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">边界框:</div>
+                                <div class="info-value">(${Math.round(detection.bounding_box.x1)}, ${Math.round(detection.bounding_box.y1)}) to (${Math.round(detection.bounding_box.x2)}, ${Math.round(detection.bounding_box.y2)})</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            detectionInfoContent.innerHTML = infoHTML;
+        }
+
+
+        // 显示检测摘要信息
+        function displayDetectionSummary(summaryData) {
+            const detectionInfoContent = document.getElementById('detectionInfoContent');
+
+            let summaryHTML = `
+                <div class="info-item">
+                    <div class="info-label">处理时间:</div>
+                    <div class="info-value">${summaryData.processing_time}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">使用模型:</div>
+                    <div class="info-value">${summaryData.model_used}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">检测目标数:</div>
+                    <div class="info-value">${summaryData.total_detections}</div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background-color: #e9f7ef; border-radius: 5px; border-left: 4px solid #28a745;">
+                    <strong>提示:</strong> 完整检测详情可在大屏幕设备上查看
+                </div>
+            `;
+
+            detectionInfoContent.innerHTML = summaryHTML;
+        }
+
+
+
+        // 显示/隐藏加载状态
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            loading.style.display = show ? 'block' : 'none';
+        }
+
+        // 修改显示状态消息函数
+        function showMessage(message, type) {
+            // 在图片显示区域上方显示消息
+            const imageSection = document.querySelector('.image-section');
+
+            // 检查是否已存在消息元素
+            let messageElement = document.getElementById('imageSectionMessage');
+            if (!messageElement) {
+                // 创建消息元素
+                messageElement = document.createElement('div');
+                messageElement.id = 'imageSectionMessage';
+                messageElement.className = 'status-message';
+                imageSection.parentNode.insertBefore(messageElement, imageSection);
+            }
+
+            messageElement.textContent = message;
+            messageElement.className = 'status-message ' + type;
+            messageElement.style.display = message ? 'block' : 'none';
+            messageElement.style.marginBottom = '20px';
+            messageElement.style.borderRadius = '8px';
+            messageElement.style.padding = '15px';
+            messageElement.style.textAlign = 'center';
+
+            // 3秒后自动隐藏成功消息
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageElement.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+
+        // 获取认证token的辅助函数
+        function getAuthToken() {
+            const userInfo = localStorage.getItem('user_info');
+            if (userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    return user.token || '';
+                } catch (e) {
+                    return '';
+                }
+            }
+            return '';
+        }
+
+                // 获取用户ID - 改进版本
+        function getUserId() {
+            const userInfo = localStorage.getItem('user_info');
+            if (userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    // 确保返回的是有效值
+                    return user.user_id && user.user_id !== 'undefined' ? user.user_id : '';
+                } catch (e) {
+                    console.error('解析用户信息失败:', e);
+                    return '';
+                }
+            }
+            return '';
+        }
+
+        // 在window.onload函数中添加
+        window.onload = function() {
+            // 显示当前用户信息
+            displayCurrentUserInfo();
+
+            // 初始化时禁用开始识别按钮
+            document.getElementById('predictBtn').disabled = true;
+        };
+
+
+        // 显示当前用户信息 - 改进版
+        function displayCurrentUserInfo() {
+            const userInfo = localStorage.getItem('user_info');
+            if (userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    // 验证用户数据
+                    if (user.username) {
+                        document.getElementById('userInfo').innerHTML = `
+                            当前用户: ${user.username}<br>
+                        `;
+                    } else {
+                        document.getElementById('userInfo').textContent = '用户信息不完整';
+                    }
+                } catch (e) {
+                    document.getElementById('userInfo').textContent = '用户信息加载失败';
+                }
+            } else {
+                document.getElementById('userInfo').textContent = '请登录查看个人信息';
+            }
+        }
+
+
+        // 修改showUserInfo函数，添加人脸识别提示逻辑
+        function showUserInfo() {
+            const userInfo = localStorage.getItem('user_info');
+            if (userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    document.getElementById('userName').value = user.username || '';
+                    document.getElementById('userAge').value = user.age || '';
+                    document.getElementById('userPhone').value = user.phone || '';
+
+                    // 检查是否有人脸识别信息
+                    const faceIdPrompt = document.getElementById('faceRecognitionPrompt');
+                    if (!user.face_id || user.face_id === '') {
+                        // 如果没有face_id信息，显示提示
+                        faceIdPrompt.style.display = 'block';
+                    } else {
+                        // 如果已有face_id信息，隐藏提示
+                        faceIdPrompt.style.display = 'none';
+                    }
+
+                    document.getElementById('userInfoModal').style.display = 'flex';
+                } catch (e) {
+                    showUserInfoModalMessage('用户信息加载失败', 'error');
+                }
+            } else {
+                showUserInfoModalMessage('请先登录', 'error');
+            }
+        }
+        // 修改 goToFaceCollection 函数
+        function goToFaceCollection() {
+            // 关闭当前模态框
+            closeUserInfoModal();
+            // 获取当前用户ID
+            const userId = getUserId();
+            // 跳转到人脸识别页面，并携带用户ID参数
+            window.location.href = `add_face.html?user_id=${userId}`;
+        }
+
+
+
+
+        // 关闭用户信息模态框
+        function closeUserInfoModal() {
+            document.getElementById('userInfoModal').style.display = 'none';
+        }
+
+        // 更新用户信息
+        function updateUserInfo() {
+            const username = document.getElementById('userName').value.trim();
+            const age = document.getElementById('userAge').value.trim();
+            const phone = document.getElementById('userPhone').value.trim();
+            const userId = getUserId();
+
+            if (!username || !age || !phone) {
+                showUserInfoModalMessage('所有字段都不能为空', 'error');
+                return;
+            }
+
+            // 验证手机号格式
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                showUserInfoModalMessage('请输入正确的手机号格式', 'error');
+                return;
+            }
+
+            // 验证年龄
+            const ageNum = parseInt(age);
+            if (isNaN(ageNum) || ageNum < 1 || ageNum > 150) {
+                showUserInfoModalMessage('年龄必须在1-150之间', 'error');
+                return;
+            }
+
+            // 发送更新请求
+            fetch(`/user/update_info/${userId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getAuthToken()
+                },
+                body: JSON.stringify({
+                    username: username,
+                    age: parseInt(age),
+                    phone: phone
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    showUserInfoModalMessage('用户信息更新成功', 'success');
+                    // 更新localStorage中的用户信息
+                    const userInfo = localStorage.getItem('user_info');
+                    if (userInfo) {
+                        const user = JSON.parse(userInfo);
+                        user.username = username;
+                        user.age = parseInt(age);
+                        user.phone = phone;
+                        localStorage.setItem('user_info', JSON.stringify(user));
+                    }
+                    // 更新页面显示的用户信息
+                    displayCurrentUserInfo();
+                    // 延迟关闭模态框
+                    setTimeout(() => {
+                        closeUserInfoModal();
+                    }, 1500);
+                } else {
+                    showUserInfoModalMessage(data.msg || '更新失败', 'error');
+                }
+            })
+            .catch(error => {
+                showUserInfoModalMessage('更新用户信息失败: ' + error.message, 'error');
+                console.error('Error:', error);
+            });
+        }
+
+        // 显示修改密码模态框
+        // 显示修改密码模态框
+        function showChangePassword() {
+            document.getElementById('changePasswordForm').reset();
+            document.getElementById('changePasswordModal').style.display = 'flex';
+
+            // 检查用户是否已设置密码
+            const userInfo = localStorage.getItem('user_info');
+            if (userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    // 增加额外检查确保是当前登录用户的信息
+                    if (user.username) {
+                        // 检查password字段是否存在且不为空
+                        const hasPassword = user.password||user.password!== '';
+                        // 根据是否有密码显示不同的界面
+                        if (hasPassword) {
+                            // 用户已有密码，显示原密码输入框
+                            document.getElementById('oldPasswordGroup').style.display = 'block';
+                            document.getElementById('noPasswordPrompt').style.display = 'none';
+                        } else {
+                            // 用户没有密码，隐藏原密码输入框并显示提示
+                            document.getElementById('oldPasswordGroup').style.display = 'none';
+                            document.getElementById('noPasswordPrompt').style.display = 'block';
+                        }
+                    } else {
+                        // 用户信息不完整，隐藏模态框
+                        document.getElementById('changePasswordModal').style.display = 'none';
+                        alert('用户信息不完整，请重新登录');
+                    }
+                } catch (e) {
+                    // 解析失败时，清除无效的用户信息并提示重新登录
+                    localStorage.removeItem('user_info');
+                    document.getElementById('changePasswordModal').style.display = 'none';
+                    alert('用户信息解析失败，请重新登录');
+                }
+            } else {
+                // 没有用户信息，提示登录
+                document.getElementById('changePasswordModal').style.display = 'none';
+                alert('请先登录');
+            }
+        }
+
+
+
+        // 关闭修改密码模态框
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'none';
+        }
+
+        // 修改密码
+        function changePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const userId = getUserId();
+
+            // 检查用户是否已设置密码
+            let hasPassword = true;
+            const userInfo = localStorage.getItem('user_info');
+            if (userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    // 修改这里：检查password字段而不是password_hash字段
+                    hasPassword = user.password && user.password !== '';
+                } catch (e) {
+                    hasPassword = true; // 默认认为有密码
+                }
+            }
+
+            // 如果用户有密码，则需要验证原密码
+            if (hasPassword && !oldPassword) {
+                showChangePasswordModalMessage('请输入原密码', 'error');
+                return;
+            }
+
+            // 验证新密码
+            if (!newPassword) {
+                showChangePasswordModalMessage('请输入新密码', 'error');
+                return;
+            }
+
+            // 验证确认密码
+            if (!confirmPassword) {
+                showChangePasswordModalMessage('请确认新密码', 'error');
+                return;
+            }
+
+            // 验证新密码和确认密码是否一致
+            if (newPassword !== confirmPassword) {
+                showChangePasswordModalMessage('新密码和确认密码不一致', 'error');
+                return;
+            }
+
+            // 构造请求数据
+            const requestData = {
+                new_password: newPassword
+            };
+
+            // 如果用户有密码，则添加原密码字段
+            if (hasPassword) {
+                requestData.old_password = oldPassword;
+            }
+
+            // 发送修改密码请求
+            fetch(`/user/change_password/${userId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getAuthToken()
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    showChangePasswordModalMessage('密码修改成功', 'success');
+                    // 更新localStorage中的用户信息
+                    const userInfo = localStorage.getItem('user_info');
+                    if (userInfo) {
+                        try {
+                            const user = JSON.parse(userInfo);
+                            // 修改这里：更新password字段而不是password_hash字段
+                            user.password = '1'; // 更新密码状态
+                            localStorage.setItem('user_info', JSON.stringify(user));
+                        } catch (e) {
+                            // 忽略更新失败
+                        }
+                    }
+                    // 延迟关闭模态框
+                    setTimeout(() => {
+                        closeChangePasswordModal();
+                    }, 1500);
+                } else {
+                    showChangePasswordModalMessage(data.msg || '密码修改失败', 'error');
+                }
+            })
+            .catch(error => {
+                showChangePasswordModalMessage('修改密码失败: ' + error.message, 'error');
+                console.error('Error:', error);
+            });
+        }
+
+
+
+        // 显示用户信息模态框内的消息
+        function showUserInfoModalMessage(message, type) {
+            const errorElement = document.getElementById('userInfoModalErrorMessage');
+            const successElement = document.getElementById('userInfoModalSuccessMessage');
+
+            // 隐藏所有消息
+            errorElement.style.display = 'none';
+            successElement.style.display = 'none';
+
+            // 显示对应消息
+            if (type === 'error') {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            } else {
+                successElement.textContent = message;
+                successElement.style.display = 'block';
+            }
+
+            // 3秒后自动隐藏消息
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+                successElement.style.display = 'none';
+            }, 3000);
+        }
+
+        // 显示修改密码模态框内的消息
+        function showChangePasswordModalMessage(message, type) {
+            const errorElement = document.getElementById('changePasswordModalErrorMessage');
+            const successElement = document.getElementById('changePasswordModalSuccessMessage');
+
+            // 隐藏所有消息
+            errorElement.style.display = 'none';
+            successElement.style.display = 'none';
+
+            // 显示对应消息
+            if (type === 'error') {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            } else {
+                successElement.textContent = message;
+                successElement.style.display = 'block';
+            }
+
+            // 3秒后自动隐藏消息
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+                successElement.style.display = 'none';
+            }, 3000);
+        }
+        // 显示使用记录列表
+        function showRecordList() {
+            // 显示模态框
+            document.getElementById('recordListModal').style.display = 'flex';
+
+            // 显示加载状态
+            document.getElementById('recordListLoading').style.display = 'block';
+            document.getElementById('recordListTable').style.display = 'none';
+            document.getElementById('recordListError').style.display = 'none';
+
+            // 获取用户ID
+            const userId = getUserId();
+             if (!userId) {
+                 document.getElementById('recordListLoading').style.display = 'none';
+                 document.getElementById('recordListError').textContent = '用户未登录';
+                 document.getElementById('recordListError').style.display = 'block';
+                 return;
+             }
+
+            // 从后端获取记录列表
+            fetch(`/user/record_getlist/?user_id=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 隐藏加载状态
+                document.getElementById('recordListLoading').style.display = 'none';
+
+                if (data.code === 200) {
+                    // 显示记录列表
+                    displayRecordList(data.data);
+                } else {
+                    // 显示错误信息
+                    document.getElementById('recordListError').textContent = data.msg || '获取记录失败';
+                    document.getElementById('recordListError').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                // 隐藏加载状态
+                document.getElementById('recordListLoading').style.display = 'none';
+
+                // 显示错误信息
+                document.getElementById('recordListError').textContent = '获取记录失败: ' + error.message;
+                document.getElementById('recordListError').style.display = 'block';
+                console.error('Error:', error);
+            });
+        }
+
+        // 显示记录列表
+        function displayRecordList(records) {
+            const tableBody = document.getElementById('recordTableBody');
+
+            // 清空现有内容
+            tableBody.innerHTML = '';
+
+            if (records && records.length > 0) {
+                // 添加记录到表格
+                records.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${record.starttime || '-'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${record.model || '-'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${record.usetime || '-'}</td>
+                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; max-width: 200px; word-wrap: break-word;">${record.savepath || '-'}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // 显示表格
+                document.getElementById('recordListTable').style.display = 'block';
+            } else {
+                // 显示无记录提示
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="padding: 20px; text-align: center; color: #6c757d;">暂无使用记录</td>
+                    </tr>
+                `;
+                document.getElementById('recordListTable').style.display = 'block';
+            }
+        }
+
+        // 关闭记录列表模态框
+        function closeRecordListModal() {
+            document.getElementById('recordListModal').style.display = 'none';
+        }
+        // 清空使用记录
+        function clearRecordList() {
+            if (!confirm('确定要清空所有使用记录吗？此操作不可恢复！')) {
+                return;
+            }
+
+            // 获取用户ID
+            const userId = getUserId();
+            if (!userId) {
+                alert('用户未登录');
+                return;
+            }
+
+            // 发送清空记录请求到后端
+            fetch(`/user/record_clear/?user_id=${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    // 清空记录列表显示
+                    document.getElementById('recordTableBody').innerHTML = `
+                        <tr>
+                            <td colspan="4" style="padding: 20px; text-align: center; color: #6c757d;">暂无使用记录</td>
+                        </tr>
+                    `;
+                    alert('记录清空成功');
+                } else {
+                    alert('清空记录失败: ' + data.msg);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('清空记录请求失败: ' + error.message);
+            });
+        }
+
+
+        // 退出登录功能
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                // 清除本地存储的用户信息
+                localStorage.removeItem('user_info');
+
+                // 跳转到登录页面
+                window.location.href = '../login.html';
+            }
+        }
+
+    </script>
+</body>
+</html>

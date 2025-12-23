@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人脸信息采集</title>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/faceUtil.js"></script>
+    <script src="../js/vue.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #myApp {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .video-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .form-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .video-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #video {
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+        }
+
+        .instructions h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="myApp">
+        <div class="header">
+            <h2>人脸信息采集</h2>
+            <p>请填写个人信息并进行人脸采集</p>
+        </div>
+
+        <div class="container">
+            <div class="video-section">
+                <div class="video-container">
+                    <div id="video"></div>
+                </div>
+                <div class="button-group">
+                    <button type="button" @click="refreshVideo" class="btn btn-secondary">
+                        重新连接摄像头
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="name">用户名：</label>
+                    <input type="text" id="name" v-model="name" placeholder="请输入姓名">
+                </div>
+
+                <div class="form-group">
+                    <label for="age">年龄：</label>
+                    <input type="number" id="age" v-model="age" placeholder="请输入年龄">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">电话：</label>
+                    <input type="tel" id="phone" v-model="phone" placeholder="请输入电话号码">
+                </div>
+
+                <div class="button-group">
+                    <button type="button" @click="facecollect()" class="btn btn-primary">
+                        采集人脸信息
+                    </button>
+                    <button type="button" @click="goToFaceDetect" class="btn btn-success">
+                        人脸识别检测
+                    </button>
+                </div>
+
+                <div id="statusMessage" class="status-message"></div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>采集说明</h3>
+            <ul>
+                <li>请确保摄像头已正确连接并授予权限</li>
+                <li>将面部正对摄像头，保持适当距离，确保光线充足</li>
+                <li>填写完整个人信息后再进行人脸采集</li>
+                <li>采集过程中请保持面部静止，避免大幅度移动</li>
+                <li>采集完成后可前往"人脸识别检测"进行身份验证测试</li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script>
+    new Vue({
+        el:"#myApp",
+        data:{
+            name:"",
+            age:"",
+            phone:""
+        },
+        methods:{
+            goToFaceDetect() {
+                // 跳转到人脸识别检测页面
+                window.location.href = "face_detect.html";
+            },
+            facecollect(){
+                // 验证表单数据
+                if (!this.name || !this.age || !this.phone) {
+                    this.showStatusMessage("请填写完整的个人信息", "error");
+                    return;
+                }
+
+                const code = faceUtile.getDecode(); //获取人脸信息
+                console.log(code); //控制台打印人脸信息码
+
+                // 检查是否获取到人脸数据
+                if (!code) {
+                    this.showStatusMessage("未检测到人脸，请调整位置后重试", "error");
+                    return;
+                }
+
+                const param = {
+                    name: this.name,
+                    age: this.age,
+                    phone: this.phone,
+                    image: code,
+                };
+
+                // 显示正在处理状态
+                this.showStatusMessage("正在采集人脸信息，请稍候...", "success");
+
+                //发送ajax请求，把前端的数据发送给后端
+                $.ajax({
+                    url:"/user/face_collect/",
+                    type:"post",
+                    data:JSON.stringify(param),
+                    contentType: "application/json",
+                    success: (res) => {
+                        if(res.code==200){
+                            // 注册成功，显示成功消息
+                            this.showStatusMessage("注册成功，正在跳转到人脸识别界面...", "success");
+
+                            // 延迟跳转到人脸识别检测页面
+                            setTimeout(() => {
+                                window.location.href = "face_detect.html";
+                            }, 2000);
+
+                            // 清空表单
+                            this.name = "";
+                            this.age = "";
+                            this.phone = "";
+                        }else{
+                            this.showStatusMessage(res.msg || "采集失败，请重试", "error");
+                        }
+                    },
+                    error: (xhr, status, error) => {
+                        this.showStatusMessage("请求失败: " + error, "error");
+                    }
+                });
+            },
+            refreshVideo() {
+                // 重新初始化摄像头
+                faceUtile.openVideo("video");
+                faceUtile.width=400;
+                faceUtile.height=300;
+            },
+
+            showStatusMessage(message, type) {
+                const statusElement = document.getElementById("statusMessage");
+                statusElement.textContent = message;
+                statusElement.className = "status-message";
+                statusElement.classList.add(type === "success" ? "status-success" : "status-error");
+                statusElement.style.display = "block";
+
+                // 成功消息显示时间更长一些，以便用户看到跳转提示
+                const timeout = type === "success" ? 2500 : 3000;
+                setTimeout(() => {
+                    statusElement.style.display = "none";
+                }, timeout);
+            }
+        }
+    });
+
+    $(function(){
+        //指定摄像头的位置
+        faceUtile.openVideo("video");
+        faceUtile.width=400;
+        faceUtile.height=300;
+    });
+</script>
+</html>
