@@ -7,185 +7,19 @@
     <script src="../js/jquery.js"></script>
     <script src="../js/faceUtil.js"></script>
     <script src="../js/vue.min.js"></script>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #myApp {
-            max-width: 500px;
-            width: 100%;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(120deg, #007bff, #00bcd4);
-            color: white;
-            padding: 25px 20px;
-            text-align: center;
-        }
-
-        .header h2 {
-            margin: 0 0 10px 0;
-            font-weight: 600;
-            font-size: 24px;
-        }
-
-        .header p {
-            margin: 0;
-            opacity: 0.9;
-            font-size: 16px;
-        }
-
-        .content {
-            padding: 25px;
-        }
-
-        .video-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 25px;
-        }
-
-        #video {
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            width: 100%;
-            max-width: 400px;
-            height: 300px;
-            background-color: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-        }
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .btn {
-            padding: 14px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            width: 100%;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary {
-            background: linear-gradient(120deg, #007bff, #00bcd4);
-            color: white;
-        }
-
-        .btn-success {
-            background: linear-gradient(120deg, #28a745, #20c997);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: linear-gradient(120deg, #6c757d, #adb5bd);
-            color: white;
-        }
-
-        .btn-login {
-            background: linear-gradient(120deg, #17a2b8, #6f42c1);
-            color: white;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: #6c757d;
-            margin: 15px 0;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .divider::before {
-            margin-right: 15px;
-        }
-
-        .divider::after {
-            margin-left: 15px;
-        }
-
-        .instructions {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            border-left: 4px solid #007bff;
-        }
-
-        .instructions h3 {
-            margin-top: 0;
-            color: #333;
-            font-size: 18px;
-        }
-
-        .instructions ul {
-            padding-left: 20px;
-            text-align: left;
-            margin-bottom: 0;
-        }
-
-        .instructions li {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-
-        .instructions li:last-child {
-            margin-bottom: 0;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 15px;
-            color: #6c757d;
-            font-size: 14px;
-            background-color: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-        }
-    </style>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/tech.css">
 </head>
 <body>
+    <div class="floating-bg" aria-hidden="true"></div>
+    <div class="page-hero" aria-hidden="false">
+        <h1 class="hero-title">人脸识别检测</h1>
+        <p class="hero-sub">请将面部对准摄像头进行识别</p>
+    </div>
     <div id="myApp">
-        <div class="header">
-            <h2>人脸识别检测</h2>
-            <p>请将面部对准摄像头进行识别</p>
+        <div class="header" aria-hidden="true">
+            <!-- header moved to hero -->
         </div>
 
         <div class="content">

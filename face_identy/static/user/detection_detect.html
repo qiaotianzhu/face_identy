@@ -48,79 +48,88 @@
         }
 
         .model-selection {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            /* Dark, tech-themed panel to match global tech.css */
+            background: linear-gradient(180deg, rgba(8,20,36,0.85), rgba(6,12,22,0.75));
+            color: #e6f7ff;
+            border-radius: 14px;
+            padding: 22px;
+            border: 1px solid rgba(46,164,255,0.12);
+            box-shadow: 0 12px 40px rgba(2,8,20,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+            backdrop-filter: blur(6px);
         }
 
         .section-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: #dff6ff;
+            margin-bottom: 18px;
             text-align: center;
+            letter-spacing: 0.6px;
+            font-weight: 700;
+            text-shadow: 0 4px 18px rgba(46,164,255,0.06);
         }
 
         .model-buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 14px;
             flex-wrap: wrap;
         }
 
         .model-btn {
-            padding: 15px 25px;
-            border: none;
+            padding: 12px 22px;
+            border: 1px solid rgba(255,255,255,0.04);
             border-radius: 10px;
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 240ms ease, box-shadow 240ms ease, background 240ms ease;
             min-width: 150px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 18px rgba(2,8,20,0.6);
+            background: linear-gradient(135deg, rgba(14,165,255,0.12), rgba(3,105,161,0.06));
+            color: #dff6ff;
+            backdrop-filter: blur(2px);
         }
 
         .model-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transform: scale(1.04) translateY(-2px);
+            box-shadow: 0 12px 30px rgba(2,8,20,0.7), 0 0 18px rgba(46,164,255,0.06);
         }
 
         .model-btn.active {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transform: scale(1.06);
+            box-shadow: 0 20px 40px rgba(2,8,20,0.75), 0 0 32px rgba(46,164,255,0.12);
             position: relative;
+            background: linear-gradient(135deg, rgba(14,165,255,0.18), rgba(3,105,161,0.14));
+            color: #eaffff;
+            border-color: rgba(46,164,255,0.22);
         }
 
         .model-btn.active::after {
             content: '✓';
             position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #4CAF50;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(180deg,#2ea4ff,#0b6fb0);
             color: white;
-            width: 25px;
-            height: 25px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 12px;
+            box-shadow: 0 6px 18px rgba(46,164,255,0.14);
         }
 
-        .model-btn.model1 {
-            background: linear-gradient(135deg, #FF9800, #F57C00);
-            color: white;
-        }
-
-        .model-btn.model2 {
-            background: linear-gradient(135deg, #2196F3, #1976D2);
-            color: white;
-        }
-
+        /* Unified model button color scheme (cool blue tones) */
+        .model-btn.model1,
+        .model-btn.model2,
         .model-btn.model3 {
-            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
-            color: white;
+            background: linear-gradient(135deg, rgba(14,165,255,0.10), rgba(3,105,161,0.08));
+            color: #e6f7ff;
         }
+
+        .model-btn.model1::before { content: ''; display:none; } /* keep selectors stable */
 
         .image-section {
             display: flex;
@@ -278,17 +287,18 @@
 
         .selected-model-info {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 14px;
             font-weight: 600;
-            color: #333;
-            font-size: 1.1rem;
+            color: #cfeeff;
+            font-size: 1rem;
         }
 
         .model-description {
             text-align: center;
-            margin-top: 10px;
-            color: #666;
-            font-size: 0.9rem;
+            margin-top: 8px;
+            color: #9fcff6;
+            font-size: 0.95rem;
+            opacity: 0.95;
         }
 
         /* 模态框内表单组样式 */
@@ -401,51 +411,25 @@
 
 
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/tech.css">
 </head>
 <body>
-    <!-- 在 header 部分下方添加个人信息区域 -->
-    <!-- 修改用户信息区域，添加退出登录按钮 -->
-    <!-- 修改用户信息区域，添加查看记录按钮 -->
-    <div class="user-info-section" style="background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <div>
-                <h3 style="color: #333; margin-bottom: 10px;">用户信息</h3>
-                <p id="userInfo" style="color: #666;">请登录查看个人信息</p>
-            </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button class="action-btn" onclick="showRecordList()" style="background: linear-gradient(135deg, #6f42c1, #5a32a3);">查看记录</button>
-                <button class="action-btn" onclick="showUserInfo()" style="background: linear-gradient(135deg, #2196F3, #1976D2);">修改信息</button>
-                <button class="action-btn" onclick="showChangePassword()" style="background: linear-gradient(135deg, #FF9800, #F57C00);">设置密码</button>
-                <button class="action-btn" onclick="logout()" style="background: linear-gradient(135deg, #f44336, #d32f2f);">退出登录</button>
-            </div>
-        </div>
+    <div class="floating-bg" aria-hidden="true"></div>
+    <div class="page-hero" aria-hidden="false">
+        <h1 class="hero-title">目标检测系统</h1>
+        <p class="hero-sub">基于深度学习的多个目标识别解决方案</p>
     </div>
+    <!-- 在 header 部分下方添加个人信息区域（已移至页面底部以保持布局） -->
 
 
 
     <div class="container">
-        <div class="header">
-            <h1>目标检测系统</h1>
-            <p>基于深度学习的多个目标识别解决方案</p>
+        <div class="header" aria-hidden="true">
+            <!-- header moved to hero -->
         </div>
 
         <div class="main-content">
-            <!-- 模型选择区域 -->
-            <div class="model-selection">
-                <h2 class="section-title">选择识别模型</h2>
-                <div class="model-buttons">
-                    <button class="model-btn model1" data-model="model1">车辆检测模型</button>
-                    <button class="model-btn model2" data-model="model2">模型2</button>
-                    <button class="model-btn model3" data-model="model3">模型3</button>
-                </div>
-                <div class="selected-model-info" id="selectedModelInfo">
-                    当前未选择模型
-                </div>
-                <div class="model-description" id="modelDescription">
-                    请选择一个模型开始识别
-                </div>
-            </div>
-
             <!-- 图像处理区域 -->
             <div class="image-section">
                 <div class="image-box-container">
@@ -460,13 +444,13 @@
                 <div class="image-box-container">
                     <div class="image-box">
                         <div class="image-box-title">识别结果</div>
-                        <div class="result-container" style="display: flex; flex-direction: column; height: 100%;">
-                            <div class="image-display" id="processedImageBox" style="flex: 1; margin-bottom: 15px;">
+                        <div class="result-container">
+                            <div class="image-display" id="processedImageBox">
                                 <div class="upload-text">预测结果将显示在这里</div>
                             </div>
                             <!-- 检测信息面板 -->
-                            <div class="detection-info-panel" id="detectionInfoPanel" style="background-color: #f8f9fa; border-radius: 8px; padding: 15px; display: none; max-height: 200px; overflow-y: auto;">
-                                <h3 style="margin-top: 0; color: #333; border-bottom: 1px solid #dee2e6; padding-bottom: 10px; font-size: 1.1rem;">检测信息</h3>
+                            <div class="detection-info-panel" id="detectionInfoPanel">
+                                <h3 class="detection-info-title">检测信息</h3>
                                 <div id="detectionInfoContent"></div>
                             </div>
                         </div>
@@ -474,12 +458,42 @@
                 </div>
             </div>
 
+            <!-- 在图像区域与用户信息之间放置模型选择（更接近操作流） -->
+            <div class="model-selection" id="modelSelectionPanel" aria-label="模型选择">
+                <h2 class="section-title">选择识别模型</h2>
+                <div class="model-buttons" role="tablist" aria-label="模型列表">
+                    <button class="model-btn model1" data-model="model1" role="tab">车辆检测模型</button>
+                    <button class="model-btn model2" data-model="model2" role="tab">模型2</button>
+                    <button class="model-btn model3" data-model="model3" role="tab">模型3</button>
+                </div>
+                <div class="selected-model-info" id="selectedModelInfo">
+                    当前未选择模型
+                </div>
+                <div class="model-description" id="modelDescription">
+                    请选择一个模型开始识别
+                </div>
+            </div>
 
-
-            <!-- 操作按钮 -->
+            <!-- 操作按钮（放在用户信息上方，便于立即上传/识别） -->
             <div class="action-buttons">
                 <button class="action-btn upload-btn" onclick="getImg()">上传图片</button>
                 <button class="action-btn predict-btn" onclick="sendImg()" id="predictBtn" disabled>开始识别</button>
+            </div>
+
+            <!-- 用户信息（位于原始图像与识别结果下方） -->
+            <div class="user-info-section" style="margin-top:18px;">
+                <div class="user-info-inner">
+                    <div>
+                        <h3 class="user-info-title">用户信息</h3>
+                        <p id="userInfo" class="user-info-text">请登录查看个人信息</p>
+                    </div>
+                    <div class="user-info-actions">
+                        <button class="action-btn" onclick="showRecordList()">查看记录</button>
+                        <button class="action-btn" onclick="showUserInfo()">修改信息</button>
+                        <button class="action-btn" onclick="showChangePassword()">设置密码</button>
+                        <button class="action-btn" onclick="logout()">退出登录</button>
+                    </div>
+                </div>
             </div>
 
             <!-- 状态消息 -->
@@ -495,42 +509,42 @@
 
     <!-- 在页面底部添加模态框 -->
     <!-- 用户信息模态框 -->
-    <div class="modal" id="userInfoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
-        <div class="modal-content" style="background-color: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div class="modal" id="userInfoModal">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h2>个人信息</h2>
-                <span class="close" onclick="closeUserInfoModal()" style="font-size: 28px; cursor: pointer; color: #aaa;">&times;</span>
+                <span class="close" onclick="closeUserInfoModal()">&times;</span>
             </div>
             <form id="userInfoForm">
                 <div class="form-group">
                     <label for="userName">用户名:</label>
-                    <input type="text" id="userName" name="username" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                    <input type="text" id="userName" name="username" required>
                 </div>
                 <div class="form-group">
                     <label for="userAge">年龄:</label>
-                    <input type="number" id="userAge" name="age" required min="1" max="150" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                    <input type="number" id="userAge" name="age" required min="1" max="150">
                 </div>
                 <div class="form-group">
                     <label for="userPhone">电话:</label>
-                    <input type="tel" id="userPhone" name="phone" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                    <input type="tel" id="userPhone" name="phone" required>
                 </div>
                 <!-- 在表单底部添加人脸识别提示区域 -->
-                <div id="faceRecognitionPrompt" style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; display: none;">
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div id="faceRecognitionPrompt" class="face-recognition-prompt hidden">
+                    <div class="face-recognition-inner">
                         <div>
                             <strong>未进行人脸识别认证</strong>
-                            <p style="margin: 5px 0 0 0; font-size: 14px; color: #856404;">为了账户安全，请完成人脸识别认证</p>
+                            <p class="muted">为了账户安全，请完成人脸识别认证</p>
                         </div>
-                        <button type="button" onclick="goToFaceCollection()" style="padding: 8px 15px; background: #ffc107; color: #212529; border: none; border-radius: 5px; cursor: pointer; font-weight: 500;">前往认证</button>
+                        <button type="button" onclick="goToFaceCollection()" class="action-btn">前往认证</button>
                     </div>
                 </div>
 
                 <!-- 模态框内消息显示区域 -->
-                <div class="message error-message" id="userInfoModalErrorMessage" style="display: none; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2;"></div>
-                <div class="message success-message" id="userInfoModalSuccessMessage" style="display: none; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9;"></div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-                    <button type="button" onclick="closeUserInfoModal()" style="padding: 10px 20px; background: #9E9E9E; color: white; border: none; border-radius: 5px; cursor: pointer;">取消</button>
-                    <button type="button" onclick="updateUserInfo()" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">保存</button>
+                <div class="message error-message" id="userInfoModalErrorMessage"></div>
+                <div class="message success-message" id="userInfoModalSuccessMessage"></div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeUserInfoModal()" class="btn cancel-btn">取消</button>
+                    <button type="button" onclick="updateUserInfo()" class="btn save-btn">保存</button>
                 </div>
             </form>
         </div>
@@ -538,77 +552,68 @@
 
     <!-- 修改密码模态框 -->
     <!-- 修改密码模态框 -->
-    <div class="modal" id="changePasswordModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
-        <div class="modal-content" style="background-color: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div class="modal" id="changePasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h2>设置密码</h2>
-                <span class="close" onclick="closeChangePasswordModal()" style="font-size: 28px; cursor: pointer; color: #aaa;">&times;</span>
+                <span class="close" onclick="closeChangePasswordModal()">&times;</span>
             </div>
             <form id="changePasswordForm">
-                <div id="noPasswordPrompt" style="display: none; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; margin-bottom: 20px; text-align: center; color: #856404;">
-                    <strong>提示：</strong>当前账户未设置密码，请设置新密码
-                </div>
+                <div id="noPasswordPrompt" class="no-password-prompt hidden"></div>
                 <div class="form-group" id="oldPasswordGroup">
                     <label for="oldPassword">原密码:</label>
-                    <input type="password" id="oldPassword" name="oldPassword" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                    <input type="password" id="oldPassword" name="oldPassword" required>
                 </div>
                 <div class="form-group">
                     <label for="newPassword">新密码:</label>
-                    <input type="password" id="newPassword" name="newPassword" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                    <input type="password" id="newPassword" name="newPassword" required>
                 </div>
                 <div class="form-group">
                     <label for="confirmPassword">确认新密码:</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
                 </div>
-                <!-- 模态框内消息显示区域 -->
-                <div class="message error-message" id="changePasswordModalErrorMessage" style="display: none; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2;"></div>
-                <div class="message success-message" id="changePasswordModalSuccessMessage" style="display: none; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9;"></div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-                    <button type="button" onclick="closeChangePasswordModal()" style="padding: 10px 20px; background: #9E9E9E; color: white; border: none; border-radius: 5px; cursor: pointer;">取消</button>
-                    <button type="button" onclick="changePassword()" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">确定</button>
+                <div class="message error-message" id="changePasswordModalErrorMessage"></div>
+                <div class="message success-message" id="changePasswordModalSuccessMessage"></div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeChangePasswordModal()" class="btn cancel-btn">取消</button>
+                    <button type="button" onclick="changePassword()" class="btn save-btn">确定</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- 使用记录模态框 -->
-    <div class="modal" id="recordListModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
-        <div class="modal-content" style="background-color: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 800px; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+    <div class="modal" id="recordListModal">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h2>使用记录</h2>
-                <span class="close" onclick="closeRecordListModal()" style="font-size: 28px; cursor: pointer; color: #aaa;">&times;</span>
+                <span class="close" onclick="closeRecordListModal()">&times;</span>
             </div>
-            <div id="recordListContent" style="min-height: 300px;">
-                <!-- 记录列表将在这里显示 -->
-                <div id="recordListLoading" style="text-align: center; padding: 20px; display: none;">
-                    <div class="spinner" style="margin: 0 auto;"></div>
+            <div id="recordListContent">
+                <div id="recordListLoading" class="record-loading hidden">
+                    <div class="spinner"></div>
                     <p>正在加载记录...</p>
                 </div>
-                <div id="recordListTable" style="display: none;">
-                    <table style="width: 100%; border-collapse: collapse;">
+                <div id="recordListTable" class="hidden">
+                    <table>
                         <thead>
-                            <tr style="background-color: #f8f9fa;">
-                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #dee2e6;">开始时间</th>
-                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #dee2e6;">模型</th>
-                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #dee2e6;">处理时间(秒)</th>
-                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #dee2e6;">保存路径</th>
+                            <tr>
+                                <th>开始时间</th>
+                                <th>模型</th>
+                                <th>处理时间(秒)</th>
+                                <th>保存路径</th>
                             </tr>
                         </thead>
                         <tbody id="recordTableBody">
-                            <!-- 记录数据将在这里显示 -->
                         </tbody>
                     </table>
                 </div>
-                <div id="recordListError" style="display: none; text-align: center; padding: 20px; color: #dc3545;">
-                    <!-- 错误信息将在这里显示 -->
-                </div>
+                <div id="recordListError" class="hidden"></div>
             </div>
-            <!-- 修改使用记录模态框的按钮区域 -->
-            <div style="margin-top: 20px; text-align: center; display: flex; justify-content: center; gap: 10px;">
-                <button type="button" onclick="clearRecordList()" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">清空记录</button>
-                <button type="button" onclick="closeRecordListModal()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">关闭</button>
+            <div class="form-actions center">
+                <button type="button" onclick="clearRecordList()" class="btn cancel-btn">清空记录</button>
+                <button type="button" onclick="closeRecordListModal()" class="btn cancel-btn">关闭</button>
             </div>
-
         </div>
     </div>
 
@@ -875,7 +880,7 @@ function sendImg() {
             `;
 
             if (infoData.detections && infoData.detections.length > 0) {
-                infoHTML += `<h4 style="color: #333; margin: 15px 0 10px; font-size: 1rem;">检测详情:</h4>`;
+                infoHTML += `<h4 class="detection-detail-title">检测详情:</h4>`;
 
                 infoData.detections.forEach(detection => {
                     const confidencePercent = (detection.confidence * 100).toFixed(1);
@@ -919,7 +924,7 @@ function sendImg() {
                     <div class="info-label">检测目标数:</div>
                     <div class="info-value">${summaryData.total_detections}</div>
                 </div>
-                <div style="margin-top: 15px; padding: 10px; background-color: #e9f7ef; border-radius: 5px; border-left: 4px solid #28a745;">
+                <div class="detection-summary-tip">
                     <strong>提示:</strong> 完整检测详情可在大屏幕设备上查看
                 </div>
             `;
@@ -1395,15 +1400,15 @@ function sendImg() {
             // 清空现有内容
             tableBody.innerHTML = '';
 
-            if (records && records.length > 0) {
+                if (records && records.length > 0) {
                 // 添加记录到表格
                 records.forEach(record => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${record.starttime || '-'}</td>
-                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${record.model || '-'}</td>
-                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">${record.usetime || '-'}</td>
-                        <td style="padding: 12px; border-bottom: 1px solid #dee2e6; max-width: 200px; word-wrap: break-word;">${record.savepath || '-'}</td>
+                        <td class="td-cell">${record.starttime || '-'}</td>
+                        <td class="td-cell">${record.model || '-'}</td>
+                        <td class="td-cell">${record.usetime || '-'}</td>
+                        <td class="td-cell td-long">${record.savepath || '-'}</td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -1414,7 +1419,7 @@ function sendImg() {
                 // 显示无记录提示
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="4" style="padding: 20px; text-align: center; color: #6c757d;">暂无使用记录</td>
+                        <td colspan="4" class="no-data">暂无使用记录</td>
                     </tr>
                 `;
                 document.getElementById('recordListTable').style.display = 'block';
@@ -1451,7 +1456,7 @@ function sendImg() {
                     // 清空记录列表显示
                     document.getElementById('recordTableBody').innerHTML = `
                         <tr>
-                            <td colspan="4" style="padding: 20px; text-align: center; color: #6c757d;">暂无使用记录</td>
+                            <td colspan="4" class="no-data">暂无使用记录</td>
                         </tr>
                     `;
                     alert('记录清空成功');
