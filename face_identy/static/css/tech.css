@@ -521,25 +521,133 @@ h2 { font-size: 20px; }
     .hero-sub { display: none; }
 }
 
-/* Image section: enforce two-column layout on wide screens, stacked on narrow */
+/* Image section: three-column layout on wide screens, stacked on narrow */
 .image-section {
     display: flex;
-    gap: 30px;
+    gap: 20px;
     justify-content: center;
     align-items: flex-start;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
 }
 .image-box-container {
-    flex: 1 1 48%;
-    min-width: 320px;
-    max-width: 720px;
+    flex: 1 1 calc(33.333% - 14px);
+    min-width: 280px;
+    max-width: 480px;
 }
-.image-box { padding: 22px !important; }
-.image-display { min-height: 360px; display:flex; align-items:center; justify-content:center; background: linear-gradient(180deg, rgba(2,6,12,0.95), rgba(6,12,18,0.96)) !important; }
+.image-box {
+    padding: 18px !important;
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+}
+.image-display {
+    flex: 1;
+    min-height: 360px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: linear-gradient(180deg, rgba(2,6,12,0.95), rgba(6,12,18,0.96)) !important;
+    border-radius: 8px;
+    margin-bottom: 0;
+}
 
-@media (max-width: 900px) {
-    .image-section { flex-direction: column; gap: 22px; }
-    .image-box-container { width: 100%; max-width: 100%; }
+/* Detection info panel specific styling */
+.detection-info-panel {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0;
+    overflow-y: auto;
+    font-size: 0.9rem;
+    color: #dbeefc;
+}
+.detection-info-panel .image-box-title {
+    margin: 0 0 12px 0;
+    color: #e6f7ff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(46,196,255,0.2);
+    padding-bottom: 8px;
+}
+.detection-info-panel #detectionInfoContent {
+    line-height: 1.5;
+    padding: 8px 0;
+}
+
+/* Detection info content styling */
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.info-item:last-child {
+    border-bottom: none;
+}
+.info-label {
+    color: #9fcff6;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+.info-value {
+    color: #e6f7ff;
+    font-weight: 600;
+    text-align: right;
+    font-size: 0.85rem;
+}
+.detection-detail-title {
+    color: #bfefff;
+    font-size: 1rem;
+    margin: 16px 0 12px 0;
+    font-weight: 600;
+}
+.detection-item {
+    background: rgba(46,196,255,0.05);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+.detection-item-header {
+    color: #e6f7ff;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.confidence-bar {
+    background: rgba(255,255,255,0.1);
+    height: 6px;
+    border-radius: 3px;
+    margin: 6px 0;
+    overflow: hidden;
+}
+.confidence-level {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+/* Responsive breakpoints for three-column layout */
+@media (max-width: 1200px) {
+    .image-box-container {
+        flex: 1 1 calc(50% - 10px);
+        min-width: 300px;
+    }
+    .image-section { gap: 20px; }
+}
+
+@media (max-width: 768px) {
+    .image-box-container {
+        flex: 1 1 100%;
+        width: 100%;
+        max-width: 100%;
+    }
+    .image-section {
+        flex-direction: column;
+        gap: 18px;
+    }
+    .image-box { height: auto; min-height: 400px; }
 }
 
 

@@ -444,15 +444,17 @@
                 <div class="image-box-container">
                     <div class="image-box">
                         <div class="image-box-title">识别结果</div>
-                        <div class="result-container">
-                            <div class="image-display" id="processedImageBox">
-                                <div class="upload-text">预测结果将显示在这里</div>
-                            </div>
-                            <!-- 检测信息面板 -->
-                            <div class="detection-info-panel" id="detectionInfoPanel">
-                                <h3 class="detection-info-title">检测信息</h3>
-                                <div id="detectionInfoContent"></div>
-                            </div>
+                        <div class="image-display" id="processedImageBox">
+                            <div class="upload-text">预测结果将显示在这里</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="image-box-container">
+                    <div class="image-box">
+                        <div class="image-box-title">检测信息</div>
+                        <div class="detection-info-panel" id="detectionInfoPanel">
+                            <div id="detectionInfoContent">请选择图片并开始识别</div>
                         </div>
                     </div>
                 </div>
@@ -752,17 +754,14 @@ function sendImg() {
                 document.getElementById('processedImageBox').innerHTML = `<img src="${data.processed_img_base64}" alt="识别结果"/>`;
 
                 // 显示检测信息面板
-                const detectionInfoPanel = document.getElementById('detectionInfoPanel');
                 const detectionInfoContent = document.getElementById('detectionInfoContent');
 
                 // 显示详细检测信息
                 if (data.detection_info) {
                     displayDetectionInfo(data.detection_info);
-                    detectionInfoPanel.style.display = 'block';
                 } else if (data.detection_summary) {
                     // 显示摘要信息
                     displayDetectionSummary(data.detection_summary);
-                    detectionInfoPanel.style.display = 'block';
                 }
 
                 // 保存检测数据到全局变量，供保存功能使用
