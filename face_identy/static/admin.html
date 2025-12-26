@@ -14,11 +14,10 @@
         <h1 class="hero-title">管理员系统</h1>
         <p class="hero-sub">用户管理面板</p>
     </div>
-    <div class="container">
+    <div class="container admin-page">
         <div class="header" aria-hidden="true">
             <div>
-                <button class="btn add-user-btn" id="addUserBtn">添加用户</button>
-                <button class="btn logout-btn" id="logoutBtn">退出登录</button>
+                <!-- action buttons moved to container bottom for improved layout -->
             </div>
         </div>
 
@@ -45,6 +44,10 @@
                     <!-- 用户数据将通过JavaScript动态填充 -->
                 </tbody>
             </table>
+            <div class="container-actions" style="margin-top:18px;">
+                <button class="btn add-user-btn" id="addUserBtn">添加用户</button>
+                <button class="btn logout-btn" id="logoutBtn">退出登录</button>
+            </div>
         </div>
     </div>
 

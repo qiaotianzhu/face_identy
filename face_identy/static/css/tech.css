@@ -498,6 +498,17 @@ select:focus, textarea:focus {
     padding: 28px;
 }
 
+/* Admin page: place container at top (avoid vertical centering) and style bottom action row */
+.admin-page {
+    align-self: flex-start;
+    margin-top: 110px; /* leave space for hero */
+}
+.container-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
 /* Full-width section utility: lets a panel breathe and span wide content areas */
 .full-width-section {
     width: calc(100% - 96px);
