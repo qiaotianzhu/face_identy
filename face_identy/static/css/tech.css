@@ -581,6 +581,16 @@ h2 { font-size: 20px; }
     margin-top: 6px;
 }
 
+/* Register page: center the face enrollment button and related controls */
+.register-container .register-actions,
+.register-container .face-btn {
+    width: 100%;
+    display: block;
+    margin: 12px auto;
+    text-align: center;
+}
+.register-container .face-btn { max-width: 280px; }
+
 /* Page hero (large title in top-left) */
 .page-hero {
     position: fixed;
