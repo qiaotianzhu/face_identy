@@ -26,6 +26,8 @@
             <div class="video-section">
                 <div class="video-container">
                     <div id="video"></div>
+                    <div class="face-frame" aria-hidden="true"></div>
+                    <div class="capture-overlay" id="captureOverlay" aria-hidden="true"></div>
                 </div>
                 <div class="button-group">
                     <button type="button" @click="refreshVideo" class="btn btn-secondary">
@@ -59,6 +61,8 @@
             </ul>
         </div>
     </div>
+    <!-- Toast container for non-blocking notifications -->
+    <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 </body>
 <script>
     new Vue({
@@ -72,11 +76,15 @@
                 window.location.href = "face_detect.html";
             },
             facecollect(){
+                // 显示采集中视觉反馈
+                this.showCaptureOverlay();
+
                 const code = faceUtile.getDecode(); //获取人脸信息
                 console.log(code); //控制台打印人脸信息码
 
                 // 检查是否获取到人脸数据
                 if (!code) {
+                    this.hideCaptureOverlay();
                     this.showStatusMessage("未检测到人脸，请调整位置后重试", "error");
                     return;
                 }
@@ -105,6 +113,7 @@
                     data:JSON.stringify(param),
                     contentType: "application/json",
                     success: (res) => {
+                        this.hideCaptureOverlay(); // 隐藏采集反馈
                         if(res.code==200){
                             // 注册成功，显示成功消息
                             this.showStatusMessage("人脸信息采集成功！", "success");
@@ -118,6 +127,7 @@
                         }
                     },
                     error: (xhr, status, error) => {
+                        this.hideCaptureOverlay(); // 隐藏采集反馈
                         this.showStatusMessage("请求失败: " + error, "error");
                     }
                 });
@@ -143,7 +153,31 @@
                 }, 100);
             },
 
+            showCaptureOverlay() {
+                const overlay = document.getElementById("captureOverlay");
+                if (overlay) {
+                    overlay.innerHTML = `
+                        <div class="capture-feedback">
+                            <div class="capture-spinner"></div>
+                            <p>正在采集人脸信息...</p>
+                        </div>
+                    `;
+                    overlay.classList.add("active");
+                }
+            },
+            hideCaptureOverlay() {
+                const overlay = document.getElementById("captureOverlay");
+                if (overlay) {
+                    overlay.classList.remove("active");
+                    setTimeout(() => {
+                        overlay.innerHTML = "";
+                    }, 300);
+                }
+            },
             showStatusMessage(message, type) {
+                // Use modern toast notifications instead of inline status messages
+                showToast(message, type === "success" ? "" : "error");
+
                 const statusElement = document.getElementById("statusMessage");
                 statusElement.textContent = message;
                 statusElement.className = "status-message";
@@ -177,6 +211,38 @@
             }
         }, 100);
     });
+
+    /* Simple toast notification helper */
+    function showToast(message, type) {
+        let container = document.getElementById('toastContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.setAttribute('aria-live', 'polite');
+            container.setAttribute('aria-atomic', 'true');
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = 'toast' + (type ? ' ' + type : '');
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // Force layout calculation then show
+        requestAnimationFrame(() => toast.classList.add('show'));
+
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                try {
+                    container.removeChild(toast);
+                } catch(e) {
+                    // Element might already be removed
+                }
+            }, 220);
+        }, 3000);
+    }
 </script>
 
 </html>

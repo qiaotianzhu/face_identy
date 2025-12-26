@@ -58,27 +58,37 @@
             <form id="userForm">
                 <input type="hidden" id="userId">
                 <div class="form-group">
-                    <label for="userType">用户类型:</label>
-                    <select id="userType" name="userType" required>
-                        <option value="user">普通用户</option>
-                        <option value="admin">管理员</option>
-                    </select>
+                    <div class="field">
+                        <select id="userType" name="userType" required>
+                            <option value="user">普通用户</option>
+                            <option value="admin">管理员</option>
+                        </select>
+                        <label for="userType">用户类型</label>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="username">用户名:</label>
-                    <input type="text" id="username" name="username" required>
+                    <div class="field">
+                        <input type="text" id="username" name="username" required placeholder=" ">
+                        <label for="username">用户名</label>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="age">年龄:</label>
-                    <input type="number" id="age" name="age" required min="1" max="150">
+                    <div class="field">
+                        <input type="number" id="age" name="age" required min="1" max="150" placeholder=" ">
+                        <label for="age">年龄</label>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="phone">电话:</label>
-                    <input type="tel" id="phone" name="phone" required>
+                    <div class="field">
+                        <input type="tel" id="phone" name="phone" required placeholder=" ">
+                        <label for="phone">手机号</label>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="password">密码:</label>
-                    <input type="password" id="password" name="password" required>
+                    <div class="field">
+                        <input type="password" id="password" name="password" required placeholder=" ">
+                        <label for="password">密码</label>
+                    </div>
                 </div>
                 <!-- 在表单中添加消息显示区域 -->
                 <div class="message error-message" id="modalErrorMessage"></div>
