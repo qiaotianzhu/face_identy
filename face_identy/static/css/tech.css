@@ -553,6 +553,34 @@ h2 { font-size: 20px; }
     border-radius: 12px !important;
 }
 
+/* Login page layout */
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    margin: 140px auto 40px; /* center horizontally and leave space for hero */
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(180deg, rgba(8,14,20,0.94), rgba(6,10,16,0.92));
+    border-radius: 12px;
+    border: 1px solid rgba(46,196,255,0.06);
+    box-shadow: 0 18px 44px rgba(2,8,20,0.6);
+}
+.login-container .button-row { width: 100%; display:flex; gap:12px; justify-content:space-between; }
+.face-login-description {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.98rem;
+    margin-top: 6px;
+}
+.face-login-btn {
+    align-self: center;
+    min-width: 160px;
+    margin-top: 6px;
+}
+
 /* Page hero (large title in top-left) */
 .page-hero {
     position: fixed;
