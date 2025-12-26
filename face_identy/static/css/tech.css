@@ -501,12 +501,20 @@ select:focus, textarea:focus {
 /* Admin page: place container at top (avoid vertical centering) and style bottom action row */
 .admin-page {
     align-self: flex-start;
-    margin-top: 110px; /* leave space for hero */
+    margin-top: 48px; /* leave space for hero */
 }
 .container-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+    width: 100%;
+    align-self: flex-end; /* ensure it stays inside container and aligns right */
+}
+
+/* Ensure admin content stacks and actions stay inside container */
+.admin-page .content {
+    display: flex;
+    flex-direction: column;
 }
 
 /* Full-width section utility: lets a panel breathe and span wide content areas */
